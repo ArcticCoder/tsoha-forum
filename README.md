@@ -1,4 +1,4 @@
-# Keskustelusovellus
+# Keskustelusovellus - Vili Sinervä
 *Idea [kurssimateriaalin](https://hy-tsoha.github.io/materiaali/aiheen_valinta/) esimerkistä "Keskustelusovellus".* 
 
 ## Konsepti

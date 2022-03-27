@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<!TODO Client side validation>
+<form action="/login" method="POST">
+<p>Käyttäjänimi:<br>
+<input type="text" name="username" required></p>
+<p>Salasana:<br>
+<input type="password" name="password" required></p>
+<input type="submit" value="Kirjaudu sisään">
+</form>
+
+{% endblock %}

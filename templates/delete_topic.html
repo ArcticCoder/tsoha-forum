@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form action="/delete_topic/{{id}}" method="POST">
+	<p><b>HALUATKO VARMASTI POISTAA ALUEEN "{{topic}}"?</b></p>
+	<input type="submit" value="Poista alue">
+</form>
+
+{% endblock %}

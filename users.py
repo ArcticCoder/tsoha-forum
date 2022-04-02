@@ -23,9 +23,7 @@ def username_available(username : str):
     sql = "SELECT id FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     id = result.fetchone()
-    if id is None:
-        return True
-    return False
+    return not id
 
 def register(username : str, password : str):
     if username_available(username) and len(password) >= 8:

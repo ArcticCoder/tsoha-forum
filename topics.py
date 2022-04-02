@@ -1,4 +1,5 @@
 from db import db
+from users import check_csrf
 from flask import session
 
 def get_all():
@@ -22,6 +23,7 @@ def available(topic):
     return not id
 
 def create_topic(topic):
+    check_csrf()
     if session.get("is_admin") and available(topic):
         try:
             sql = "INSERT INTO topics(topic) VALUES (:topic);"
@@ -31,12 +33,14 @@ def create_topic(topic):
             pass
 
 def delete_topic(id : int):
+    check_csrf()
     if session.get("is_admin"):
         sql = "UPDATE topics SET visible =false WHERE id=:id;"
         db.session.execute(sql, {"id":id})
         db.session.commit()
 
 def restore_topic(id : int):
+    check_csrf()
     if session.get("is_admin"):
         sql = "UPDATE topics SET visible =true WHERE id=:id;"
         db.session.execute(sql, {"id":id})

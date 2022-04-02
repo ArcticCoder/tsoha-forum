@@ -13,6 +13,7 @@
 		<a href="/topic/{{topic.id}}" topic not_visible>{{topic.topic}} <em>(poistettu)</em>
 		{% if session.get("is_admin") %}
 			<form action="/restore_topic/{{topic.id}}" method="POST" style="display: inline">
+			<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 			<input type="submit" value="Palauta alue">
 			</form>
 		{% endif%}
@@ -24,11 +25,12 @@
 {% endfor%}
 
 {% if session.get("is_admin") %}
-<form action="/create_topic" method="POST">
-<p>Uuden alueen nimi:<br>
-<input type="text" name="topic" required></p>
-<input type="submit" value="Luo alue">
-</form>
+	<form action="/create_topic" method="POST">
+	<p>Uuden alueen nimi:<br>
+	<input type="text" name="topic" required></p>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Luo alue">
+	</form>
 {% endif%}
 
 {% endblock %}

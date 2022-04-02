@@ -3,6 +3,7 @@
 
 <form action="/delete_topic/{{id}}" method="POST">
 	<p><b>HALUATKO VARMASTI POISTAA ALUEEN "{{topic}}"?</b></p>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 	<input type="submit" value="Poista alue">
 </form>
 

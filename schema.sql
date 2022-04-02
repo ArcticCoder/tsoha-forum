@@ -1,7 +1,6 @@
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
 	username TEXT UNIQUE NOT NULL,
-	password_salt TEXT UNIQUE NOT NULL,
 	password_hash TEXT NOT NULL,
-	admin BOOL DEFAULT FALSE
+	is_admin BOOL DEFAULT FALSE
 );

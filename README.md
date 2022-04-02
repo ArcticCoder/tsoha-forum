@@ -5,9 +5,11 @@
 
 Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvillä alueilla. Perinteinen foorumi.
 
-## Ominaisuuksia
+## Toteutetut ominaisuudet
 * Sisään-/uloskirjautuminen ja uuden käyttäjän luominen
 * Erikseen tavalliset käyttäjät ja ylläpitäjät
+
+## Suunniteltuja ominaisuuksia
 * Käyttäjä näkee sovelluksen etusivulla listan alueista sekä jokaisen alueen ketjujen ja viestien määrän ja viimeksi lähetetyn viestin ajankohdan.
 	* Avaamalla alueen näkee kaikki alueen ketjut viimeisimmän viestin ajankohdan mukaan
 * Käyttäjä voi luoda alueelle uuden ketjun antamalla ketjun otsikon ja aloitusviestin sisällön

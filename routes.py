@@ -42,4 +42,5 @@ def register():
 
         if users.register(username, password):
             return redirect("/")
+
         return render_template("register.html", message="Tunnistamaton virhe, yritä uudelleen tai ota yhteys ylläpitäjään! (vili.sinerva@helsinki.fi)")

@@ -1,0 +1,11 @@
+a[topic]{
+	display: block;
+	background-color: #e0e0e0;
+	text-decoration: none;
+	font-size: 200%;
+	font-weight: bold;
+}
+span[topic_info]{
+	font-size: 50%;
+	font-weight: lighter;
+}

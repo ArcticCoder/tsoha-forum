@@ -1,11 +1,12 @@
 from app import app
 import users
+import topics
 from flask import redirect, render_template, request
 
 #Front page
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", topics=topics.get_all_visible())
 
 #Login
 @app.route("/login", methods=["GET", "POST"])

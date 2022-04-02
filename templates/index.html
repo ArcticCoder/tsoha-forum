@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<p> Etusivu index.html.
+{% for topic in topics %}
+	<a href="/topic/{{topic.id}}" topic>{{topic.topic}}
+		<span topic_info>Ketjuja: X, Viestejä Y, Viimeisin viesti: YYYY-MM-DD HH:MM </span>
+	</a><br>
+{% endfor%}
 
 {% endblock %}

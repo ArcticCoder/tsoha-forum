@@ -4,3 +4,9 @@ CREATE TABLE users(
 	password_hash TEXT NOT NULL,
 	is_admin BOOL DEFAULT FALSE
 );
+
+CREATE TABLE topics(
+	id SERIAL PRIMARY KEY,
+	topic TEXT UNIQUE NOT NULL,
+	visible BOOL DEFAULT TRUE
+);

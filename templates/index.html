@@ -1,6 +1,34 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<p> Etusivu index.html.
+{% for topic in topics %}
+	{% if topic.visible %}
+		<a href="/topic/{{topic.id}}" topic>{{topic.topic}}
+		{% if session.get("is_admin") %}
+			<form action="/delete_topic/{{topic.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Poista alue">
+			</form>
+		{% endif%}
+	{% else %}
+		<a href="/topic/{{topic.id}}" topic not_visible>{{topic.topic}} <em>(poistettu)</em>
+		{% if session.get("is_admin") %}
+			<form action="/restore_topic/{{topic.id}}" method="POST" style="display: inline">
+			<input type="submit" value="Palauta alue">
+			</form>
+		{% endif%}
+	{% endif %}
+
+	<span topic_info>Ketjuja: X, Viestejä Y, Viimeisin viesti: YYYY-MM-DD HH:MM </span>
+
+	</a><br>
+{% endfor%}
+
+{% if session.get("is_admin") %}
+<form action="/create_topic" method="POST">
+<p>Uuden alueen nimi:<br>
+<input type="text" name="topic" required></p>
+<input type="submit" value="Luo alue">
+</form>
+{% endif%}
 
 {% endblock %}

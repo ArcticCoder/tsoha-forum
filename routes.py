@@ -75,3 +75,8 @@ def delete_topic(id):
 def restore_topic(id):
     topics.restore_topic(id)
     return redirect("/")
+
+#MISSING PAGE
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("index.html", topics=topics.get_all(), message="Sivua ei löytynyt!")

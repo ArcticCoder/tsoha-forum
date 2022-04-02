@@ -28,7 +28,7 @@ def username_available(username : str):
     return False
 
 def register(username : str, password : str):
-    if username_available(username):
+    if username_available(username) and len(password) >= 8:
         password_hash = generate_password_hash(password)
         try:
             sql = "INSERT INTO users(username, password_hash) VALUES (:username, :hash)"

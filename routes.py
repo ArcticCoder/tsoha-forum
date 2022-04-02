@@ -35,10 +35,14 @@ def register():
         password = request.form["password"]
         password_repeat = request.form["password_repeat"]
 
-        if password_repeat != password:
-            return render_template("register.html", message="Salasanat eivät täsmää!")
         if not users.username_available(username):
             return render_template("register.html", message="Käyttäjänimi ei saatavilla!")
+
+        if password_repeat != password:
+            return render_template("register.html", message="Salasanat eivät täsmää!")
+
+        if len(password) < 8:
+            return render_template("register.html", message="Salasanan tulee olla vähintään 8 merkkiä pitkä!")
 
         if users.register(username, password):
             return redirect("/")

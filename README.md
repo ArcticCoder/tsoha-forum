@@ -8,6 +8,8 @@ Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvi
 ## Toteutetut ominaisuudet
 * Sisään-/uloskirjautuminen ja uuden käyttäjän luominen
 * Erikseen tavalliset käyttäjät ja ylläpitäjät
+* Käyttäjä näkee sovelluksen etusivulla listan alueista
+* Ylläpitäjä voi lisätä ja poistaa keskustelualueita.
 
 ## Suunniteltuja ominaisuuksia
 * Käyttäjä näkee sovelluksen etusivulla listan alueista sekä jokaisen alueen ketjujen ja viestien määrän ja viimeksi lähetetyn viestin ajankohdan.
@@ -17,5 +19,4 @@ Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvi
 * Käyttäjä voi muokata luomansa ketjun otsikkoa sekä lähettämänsä viestin sisältöä. Muokkauksesta jää muille näkyvä jälki. Käyttäjä voi myös poistaa ketjun tai viestin.
 * Käyttäjä voi etsiä kaikki ketjut, joiden otsikossa on annettu sana.
 * Käyttäjä voi etsiä kaikki viestit, koko sivulta tai tietystä ketjusta, joiden osana on annettu sana.
-* Ylläpitäjä voi lisätä ja poistaa keskustelualueita.
 * Ylläpitäjä voi poistaa yksittäisiä viestejä tai kokonaisia ketjuja

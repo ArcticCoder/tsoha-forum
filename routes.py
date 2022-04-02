@@ -1,5 +1,6 @@
 from app import app
-from flask import redirect, render_template, request, session
+import users
+from flask import redirect, render_template, request
 
 #Front page
 @app.route("/")
@@ -14,18 +15,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
-        #TODO Implement username/password checking and DB lookups
-
-        session["user_id"] = 0
-        session["user_name"] = username
-        return redirect("/")
+        if users.login(username, password):
+            return redirect("/")
+        return render_template("login.html", message="Käyttäjänimi tai salasana väärin!")
 
 #Logout "page"
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["user_name"]
+    users.logout()
     return redirect("/")
 
 #Account creation
@@ -38,9 +35,11 @@ def register():
         password = request.form["password"]
         password_repeat = request.form["password_repeat"]
 
-        #TODO Implement DB lookups, inserts and other account creation code
+        if password_repeat != password:
+            return render_template("register.html", message="Salasanat eivät täsmää!")
+        if not users.username_available(username):
+            return render_template("register.html", message="Käyttäjänimi ei saatavilla!")
 
-        if password == password_repeat:
-            session["user_id"] = 0
-            session["user_name"] = username
-        return redirect("/")
+        if users.register(username, password):
+            return redirect("/")
+        return render_template("register.html", message="Tunnistamaton virhe, yritä uudelleen tai ota yhteys ylläpitäjään! (vili.sinerva@helsinki.fi)")

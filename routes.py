@@ -1,5 +1,6 @@
 from app import app
 import users
+import threads
 import topics
 from flask import abort, redirect, render_template, request, session
 
@@ -52,6 +53,15 @@ def register():
         return render_template("register.html", message="Tunnistamaton virhe, yritä uudelleen tai ota yhteys ylläpitäjään! (vili.sinerva@helsinki.fi)")
 
 #TOPICS
+#Open topic
+@app.route("/topic/<int:id>", methods=["GET"])
+def topic(id):
+    if topics.exists(id):
+        if session.get("is_admin") or topics.visible(id):
+            return render_template("topic.html", threads=threads.get_all(id))
+        abort(401)
+    abort(404)
+
 #Topic creation
 @app.route("/create_topic", methods=["POST"])
 def create_topic():
@@ -75,6 +85,8 @@ def delete_topic(id):
 def restore_topic(id):
     topics.restore_topic(id)
     return redirect("/")
+
+#THREADS
 
 #MISSING PAGE
 @app.errorhandler(404)

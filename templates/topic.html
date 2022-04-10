@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if session.get("user_id") %}
+	<form action="/create_topic" method="GET">
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Aloita uusi ketju">
+	</form>
+	<br>
+{% endif%}
+
+{% for thread in threads %}
+	{% if thread.visible %}
+		<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
+		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
+			<form action="/delete_thread/{{thread.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Poista ketju">
+			</form>
+		{% endif%}
+	{% else %}
+		<a href="/thread/{{thread.id}}" topic not_visible>{{thread.subject}} <em>(poistettu)</em>
+		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
+			<form action="/restore_thread/{{topic.id}}" method="POST" style="display: inline">
+			<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+			<input type="submit" value="Palauta ketju">
+			</form>
+		{% endif%}
+	{% endif %}
+
+	<span topic_info>Viestejä: X, Viimeisin viesti: YYYY-MM-DD HH:MM </span>
+
+	</a><br>
+{% endfor%}
+
+{% endblock %}

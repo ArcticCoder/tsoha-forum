@@ -1,4 +1,5 @@
 from db import db
+import threads
 from users import check_csrf
 from flask import session
 
@@ -21,6 +22,20 @@ def available(topic):
     result = db.session.execute(sql, {"topic":topic})
     id = result.fetchone()
     return not id
+
+def exists(id):
+    sql = "SELECT id FROM topics WHERE id=:id;"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    if result:
+        return True
+    return False
+
+def visible(id):
+    sql = "SELECT visible FROM topics WHERE id=:id;"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    if result:
+        return result[0]
+    return result
 
 def create_topic(topic):
     check_csrf()

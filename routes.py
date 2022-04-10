@@ -71,9 +71,10 @@ def create_topic():
     topics.create_topic(topic)
     return redirect("/")
 
+#Topic deletion
 @app.route("/delete_topic/<int:id>", methods=["GET", "POST"])
 def delete_topic(id):
-    if(not session.get("is_admin")):
+    if not session.get("is_admin") :
         abort(401)
     if request.method == "GET":
         return render_template("delete_topic.html", id=id, topic=topics.get_topic(id))
@@ -81,12 +82,40 @@ def delete_topic(id):
         topics.delete_topic(id)
     return redirect("/")
 
+#Topic restoration (un-deletion)
 @app.route("/restore_topic/<int:id>", methods=["POST"])
 def restore_topic(id):
     topics.restore_topic(id)
     return redirect("/")
 
 #THREADS
+#Thread creation
+#@app.route("/create_thread", methods=["POST"])
+#def create_thread():
+#    thread = request.form["thread"]
+#    if not threads.available(thread):
+#        return render_template("index.html", threads=threads.get_all(), message="Alue on jo olemassa!")
+#    threads.create_thread(thread)
+#    return redirect("/")
+
+#Thread deletion
+@app.route("/delete_thread/<int:id>", methods=["GET", "POST"])
+def delete_thread(id):
+    thread = threads.get_thread(id)
+    if not (session.get("is_admin") or session.get("user_id") == thread.user_id):
+        abort(401)
+    if request.method == "GET":
+        return render_template("delete_thread.html", id=id, thread=threads.get_thread(id))
+    if request.method == "POST":
+        threads.delete_thread(id)
+    return redirect(f"/topic/{thread.topic_id}")
+
+#Thread restoration (un-deletion)
+@app.route("/restore_thread/<int:id>", methods=["POST"])
+def restore_thread(id):
+    threads.restore_thread(id)
+    thread = threads.get_thread(id)
+    return redirect(f"/topic/{thread.topic_id}")
 
 #MISSING PAGE
 @app.errorhandler(404)

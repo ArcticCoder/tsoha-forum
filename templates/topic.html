@@ -20,7 +20,7 @@
 	{% else %}
 		<a href="/thread/{{thread.id}}" topic not_visible>{{thread.subject}} <em>(poistettu)</em>
 		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
-			<form action="/restore_thread/{{topic.id}}" method="POST" style="display: inline">
+			<form action="/restore_thread/{{thread.id}}" method="POST" style="display: inline">
 			<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 			<input type="submit" value="Palauta ketju">
 			</form>

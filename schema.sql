@@ -33,7 +33,6 @@ CREATE TABLE messages(
 	user_id INTEGER NOT NULL,
 	message TEXT NOT NULL,
 	time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	visible BOOL DEFAULT TRUE,
 	CONSTRAINT fk_thread
 		FOREIGN KEY(thread_id)
 			REFERENCES threads(id),

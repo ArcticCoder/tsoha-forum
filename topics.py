@@ -5,12 +5,16 @@ from flask import session
 
 def get_all():
     if session.get("is_admin"):
-        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count FROM "\
+        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count,  "\
+                "COUNT(C.id) as message_count, TO_CHAR(MAX(C.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest FROM "\
                 "topics A LEFT JOIN threads B ON A.id=B.topic_id AND B.visible=true "\
+                "LEFT JOIN messages C ON B.id=C.thread_id AND C.visible=true "\
                 "GROUP BY A.id ORDER BY A.visible DESC , A.topic;"
     else:
-        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count FROM "\
+        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count, "\
+                "COUNT(C.id) as message_count, TO_CHAR(MAX(C.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest FROM "\
                 "topics A LEFT JOIN threads B ON A.id=B.topic_id AND A.visible=true AND B.visible=true "\
+                "LEFT JOIN messages C ON B.id=C.thread_id AND C.visible=true "\
                 "GROUP BY A.id ORDER BY A.visible DESC , A.topic;"
     return db.session.execute(sql).fetchall()
 

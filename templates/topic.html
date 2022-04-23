@@ -31,7 +31,7 @@
 		{% endif%}
 	{% endif %}
 
-	<span topic_info>Viestejä: X, Viimeisin viesti: YYYY-MM-DD HH:MM </span>
+	<span topic_info>Viestejä: {{thread.message_count}}, Viimeisin viesti: {{thread.latest}} UTC </span>
 
 	</a><br>
 {% endfor%}

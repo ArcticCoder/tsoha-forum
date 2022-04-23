@@ -5,9 +5,15 @@ import topics
 
 def get_all(id):
     if session.get("is_admin"):
-        sql = "SELECT id, user_id, subject, visible FROM threads WHERE topic_id=:id ORDER BY visible DESC , subject;"
+        sql = "SELECT A.id, A.user_id, A.subject, A.visible, "\
+                "COUNT(B.id) as message_count, TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest "\
+                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id AND B.visible=true AND A.topic_id=:id "\
+                "GROUP BY A.id ORDER BY A.visible DESC , A.subject;"
     else:
-        sql = "SELECT id, user_id, subject, visible FROM threads WHERE topic_id=:id and (visible=true OR user_id=:user_id) ORDER BY visible DESC, subject;"
+        sql = "SELECT A.id, A.user_id, A.subject, A.visible, "\
+                "COUNT(B.id) as message_count, TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest "\
+                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id AND A.visible=true AND B.visible=true AND A.topic_id=:id "\
+                "GROUP BY A.id ORDER BY A.visible DESC , A.subject;"
     return db.session.execute(sql, {"id":id, "user_id":session.get("user_id")}).fetchall()
 
 def get_thread(id : int):

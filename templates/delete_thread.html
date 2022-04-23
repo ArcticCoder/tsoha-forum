@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form action="/delete_thread/{{id}}" method="POST">
+	<p><b>HALUATKO VARMASTI POISTAA KETJUN "{{thread.subject}}"?</b></p>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Poista ketju">
+</form>
+
+{% endblock %}

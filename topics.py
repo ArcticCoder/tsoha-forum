@@ -1,19 +1,24 @@
 from db import db
+import threads
 from users import check_csrf
 from flask import session
 
 def get_all():
     if session.get("is_admin"):
-        sql = "SELECT A.id, A.topic, A.visible FROM topics A ORDER BY A.visible DESC , A.topic;"
+        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count FROM "\
+                "topics A LEFT JOIN threads B ON A.id=B.topic_id AND B.visible=true "\
+                "GROUP BY A.id ORDER BY A.visible DESC , A.topic;"
     else:
-        sql = "SELECT A.id, A.topic, A.visible FROM topics A WHERE A.visible=true ORDER BY A.topic;"
+        sql = "SELECT A.id, A.topic, A.visible, COUNT(B.id) as thread_count FROM "\
+                "topics A LEFT JOIN threads B ON A.id=B.topic_id AND A.visible=true AND B.visible=true "\
+                "GROUP BY A.id ORDER BY A.visible DESC , A.topic;"
     return db.session.execute(sql).fetchall()
 
 def get_topic(id : int):
-    sql = "SELECT topic FROM topics WHERE id=:id;"
+    sql = "SELECT id, topic, visible FROM topics WHERE id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()
     if result:
-        return result[0]
+        return result
     return result
 
 def available(topic):
@@ -21,6 +26,20 @@ def available(topic):
     result = db.session.execute(sql, {"topic":topic})
     id = result.fetchone()
     return not id
+
+def exists(id):
+    sql = "SELECT id FROM topics WHERE id=:id;"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    if result:
+        return True
+    return False
+
+def visible(id):
+    sql = "SELECT visible FROM topics WHERE id=:id;"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    if result:
+        return result[0]
+    return result
 
 def create_topic(topic):
     check_csrf()

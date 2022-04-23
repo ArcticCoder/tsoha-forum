@@ -1,5 +1,6 @@
 from app import app
 import users
+import threads
 import topics
 from flask import abort, redirect, render_template, request, session
 
@@ -52,6 +53,15 @@ def register():
         return render_template("register.html", message="Tunnistamaton virhe, yritä uudelleen tai ota yhteys ylläpitäjään! (vili.sinerva@helsinki.fi)")
 
 #TOPICS
+#Open topic
+@app.route("/topic/<int:id>", methods=["GET"])
+def topic(id):
+    if topics.exists(id):
+        if session.get("is_admin") or topics.visible(id):
+            return render_template("topic.html", topic=topics.get_topic(id), threads=threads.get_all(id))
+        abort(401)
+    abort(404)
+
 #Topic creation
 @app.route("/create_topic", methods=["POST"])
 def create_topic():
@@ -61,20 +71,66 @@ def create_topic():
     topics.create_topic(topic)
     return redirect("/")
 
+#Topic deletion
 @app.route("/delete_topic/<int:id>", methods=["GET", "POST"])
 def delete_topic(id):
-    if(not session.get("is_admin")):
+    if not session.get("is_admin") :
         abort(401)
     if request.method == "GET":
-        return render_template("delete_topic.html", id=id, topic=topics.get_topic(id))
+        return render_template("delete_topic.html", topic=topics.get_topic(id))
     if request.method == "POST":
         topics.delete_topic(id)
     return redirect("/")
 
+#Topic restoration (un-deletion)
 @app.route("/restore_topic/<int:id>", methods=["POST"])
 def restore_topic(id):
     topics.restore_topic(id)
     return redirect("/")
+
+#THREADS
+#Thread creation
+@app.route("/create_thread/<int:topic_id>", methods=["GET", "POST"])
+def create_thread(topic_id):
+    if not session.get("user_id"):
+        abort(401)
+    if request.method == "GET":
+        return render_template("create_thread.html", topic=topics.get_topic(topic_id))
+    if request.method == "POST":
+        thread = request.form["thread"]
+        start_message = request.form["start_message"]
+
+        if len(thread) < 1 or len(thread) > 100:
+            return render_template("topic.html", threads=threads.get_all(topic_id), message="Otsikon pituus väärä!")
+        if len(start_message) < 1 or len(start_message) > 10000:
+            return render_template("topic.html", threads=threads.get_all(topic_id), message="Aloitusviestin pituus väärä!")
+
+        new_id = threads.create_thread(topic_id, thread)
+        if not new_id:
+            return render_template("index.html", topics=topics.get_all(), message="Tunnistamaton virhe!")
+
+        #TODO Create start message
+
+        return redirect(f"/thread/{new_id}")
+
+#Thread deletion
+@app.route("/delete_thread/<int:id>", methods=["GET", "POST"])
+def delete_thread(id):
+    thread = threads.get_thread(id)
+    if not (session.get("is_admin") or session.get("user_id") == thread.user_id):
+        abort(401)
+    if request.method == "GET":
+        return render_template("delete_thread.html", id=id, thread=threads.get_thread(id))
+    if request.method == "POST":
+        threads.delete_thread(id)
+    return redirect(f"/topic/{thread.topic_id}")
+
+#Thread restoration (un-deletion)
+@app.route("/restore_thread/<int:id>", methods=["POST"])
+def restore_thread(id):
+    threads.restore_thread(id)
+    thread = threads.get_thread(id)
+    return redirect(f"/topic/{thread.topic_id}")
 
 #MISSING PAGE
 @app.errorhandler(404)

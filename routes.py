@@ -58,7 +58,7 @@ def register():
 def topic(id):
     if topics.exists(id):
         if session.get("is_admin") or topics.visible(id):
-            return render_template("topic.html", threads=threads.get_all(id))
+            return render_template("topic.html", topic=topics.get_topic(id), threads=threads.get_all(id))
         abort(401)
     abort(404)
 
@@ -77,7 +77,7 @@ def delete_topic(id):
     if not session.get("is_admin") :
         abort(401)
     if request.method == "GET":
-        return render_template("delete_topic.html", id=id, topic=topics.get_topic(id))
+        return render_template("delete_topic.html", topic=topics.get_topic(id))
     if request.method == "POST":
         topics.delete_topic(id)
     return redirect("/")
@@ -90,13 +90,28 @@ def restore_topic(id):
 
 #THREADS
 #Thread creation
-#@app.route("/create_thread", methods=["POST"])
-#def create_thread():
-#    thread = request.form["thread"]
-#    if not threads.available(thread):
-#        return render_template("index.html", threads=threads.get_all(), message="Alue on jo olemassa!")
-#    threads.create_thread(thread)
-#    return redirect("/")
+@app.route("/create_thread/<int:topic_id>", methods=["GET", "POST"])
+def create_thread(topic_id):
+    if not session.get("user_id"):
+        abort(401)
+    if request.method == "GET":
+        return render_template("create_thread.html", topic=topics.get_topic(topic_id))
+    if request.method == "POST":
+        thread = request.form["thread"]
+        start_message = request.form["start_message"]
+
+        if len(thread) < 1 or len(thread) > 100:
+            return render_template("topic.html", threads=threads.get_all(topic_id), message="Otsikon pituus väärä!")
+        if len(start_message) < 1 or len(start_message) > 10000:
+            return render_template("topic.html", threads=threads.get_all(topic_id), message="Aloitusviestin pituus väärä!")
+
+        new_id = threads.create_thread(topic_id, thread)
+        if not new_id:
+            return render_template("index.html", topics=topics.get_all(), message="Tunnistamaton virhe!")
+
+        #TODO Create start message
+
+        return redirect(f"/thread/{new_id}")
 
 #Thread deletion
 @app.route("/delete_thread/<int:id>", methods=["GET", "POST"])

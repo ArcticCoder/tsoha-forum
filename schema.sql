@@ -15,7 +15,7 @@ CREATE TABLE threads(
 	id SERIAL PRIMARY KEY,
 	topic_id INTEGER NOT NULL,
 	user_id INTEGER NOT NULL,
-	subject TEXT UNIQUE NOT NULL,
+	subject TEXT NOT NULL,
 	visible BOOL DEFAULT TRUE,
 	CONSTRAINT fk_topic
 		FOREIGN KEY(topic_id)

@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<a href="/topic/{{topic.id}}" topic>{{topic.topic}}
+<span topic_info></span>
+</a><br>
+
 {% if session.get("user_id") %}
-	<form action="/create_topic" method="GET">
-	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
-	<input type="submit" value="Aloita uusi ketju">
+	<form action="/create_thread/{{topic.id}}" method="GET">
+		<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+		<input type="submit" value="Aloita uusi ketju">
 	</form>
 	<br>
 {% endif%}

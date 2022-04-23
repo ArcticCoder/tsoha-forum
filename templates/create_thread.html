@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<a href="/topic/{{topic.id}}" topic>{{topic.topic}}<span topic_info></span></a><br>
+
+<form action="/create_thread/{{topic.id}}" method="POST">
+	<p>Otsikko (1-100 merkkiä):<br>
+	<input type="text" size = "100" maxlength="100" name="thread" required></p>
+	<p>Aloitusviesti (1-10000 merkkiä):<br>
+	<textarea rows="10" cols = "100" maxlength="10000" name="start_message" required></textarea>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Aloita ketju">
+</form>
+
+{% endblock %}

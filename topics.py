@@ -15,10 +15,10 @@ def get_all():
     return db.session.execute(sql).fetchall()
 
 def get_topic(id : int):
-    sql = "SELECT topic FROM topics WHERE id=:id;"
+    sql = "SELECT id, topic, visible FROM topics WHERE id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()
     if result:
-        return result[0]
+        return result
     return result
 
 def available(topic):

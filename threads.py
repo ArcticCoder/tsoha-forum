@@ -1,6 +1,7 @@
 from db import db
 from users import check_csrf
 from flask import session
+import topics
 
 def get_all(id):
     if session.get("is_admin"):
@@ -13,12 +14,6 @@ def get_thread(id : int):
     sql = "SELECT topic_id, user_id, subject, visible FROM threads WHERE id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()
     return result
-
-def available(subject):
-    sql = "SELECT id FROM threads WHERE subject=:subject;"
-    result = db.session.execute(sql, {"subject":subject})
-    id = result.fetchone()
-    return not id
 
 def exists(id):
     sql = "SELECT id FROM threads WHERE id=:id;"
@@ -34,15 +29,21 @@ def visible(id):
         return result[0]
     return result
 
-#def create_subject(subject):
-#    check_csrf()
-#    if session.get("is_admin") and available(subject):
-#        try:
-#            sql = "INSERT INTO threads(subject) VALUES (:subject);"
-#            db.session.execute(sql, {"subject":subject})
-#            db.session.commit()
-#        except:
-#            pass
+def create_thread(topic_id, subject):
+    check_csrf()
+    if not (topics.visible(topic_id) or session.get("is_admin")):
+        return
+
+    if session.get("user_id") and len(subject) > 0 and len(subject) <= 100:
+        try:
+            sql = "INSERT INTO threads(topic_id, user_id, subject) VALUES (:topic_id, :user_id, :subject) Returning threads.id;"
+            new_id = db.session.execute(sql, {"topic_id":topic_id, "user_id":session.get("user_id"), "subject":subject}).fetchone()
+            db.session.commit()
+            if new_id:
+                return new_id[0]
+            return
+        except:
+            pass
 
 def delete_thread(id : int):
     check_csrf()

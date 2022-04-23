@@ -54,15 +54,17 @@ def create_thread(topic_id, subject):
 def delete_thread(id : int):
     check_csrf()
     thread = get_thread(id)
-    if session.get("is_admin") or session.get("user_id") == thread.user_id:
-        sql = "UPDATE threads SET visible =false WHERE id=:id;"
-        db.session.execute(sql, {"id":id})
-        db.session.commit()
+    if thread:
+        if session.get("is_admin") or session.get("user_id") == thread.user_id:
+            sql = "UPDATE threads SET visible =false WHERE id=:id;"
+            db.session.execute(sql, {"id":id})
+            db.session.commit()
 
 def restore_thread(id : int):
     check_csrf()
     thread = get_thread(id)
-    if session.get("is_admin") or session.get("user_id") == thread.user_id:
-        sql = "UPDATE threads SET visible =true WHERE id=:id;"
-        db.session.execute(sql, {"id":id})
-        db.session.commit()
+    if thread:
+        if session.get("is_admin") or session.get("user_id") == thread.user_id:
+            sql = "UPDATE threads SET visible =true WHERE id=:id;"
+            db.session.execute(sql, {"id":id})
+            db.session.commit()

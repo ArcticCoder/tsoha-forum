@@ -11,6 +11,8 @@
 		<input type="submit" value="Aloita uusi ketju">
 	</form>
 	<br>
+{% else %}
+	<p>Kirjaudu sisään aloittaaksesi uusi ketju!</p>
 {% endif%}
 
 {% for thread in threads %}

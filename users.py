@@ -1,3 +1,4 @@
+from app import app
 from db import db
 import secrets
 from flask import abort, request, session
@@ -39,6 +40,15 @@ def register(username : str, password : str):
             pass
 
     return login(username, password)
+
+@app.template_filter('get_username')
+def get_username(id):
+    sql = "SELECT username FROM users WHERE id=:id;"
+    result = db.session.execute(sql, {"id":id})
+    name = result.fetchone()
+    if name:
+        return name[0]
+    return name
 
 def check_csrf():
     if session.get("csrf_token") != request.form["csrf_token"]:

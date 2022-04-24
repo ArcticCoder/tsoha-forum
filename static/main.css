@@ -17,7 +17,7 @@ span[topic_info]{
 	font-size: 50%;
 	font-weight: lighter;
 }
-div[message]{
+[message]{
 	display: block;
 	max-width:60%;
 	background-color: var(--bg);

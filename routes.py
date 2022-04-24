@@ -15,6 +15,16 @@ def add_header(response):
 def index():
     return render_template("index.html", topics=topics.get_all())
 
+#Search
+@app.route("/search", methods=["POST"])
+def search():
+    search_term = request.form["term"]
+    if "thread_search" in request.form:
+        return render_template("thread_search.html", search_term=search_term, results=threads.search(search_term))
+    if "message_search" in request.form:
+        return render_template("message_search.html", search_term=search_term, results=messages.search(search_term))
+    return render_template("index.html", topics=topics.get_all(), message="Tunnistamaton virhe")
+
 #ACCOUNTS
 #Login
 @app.route("/login", methods=["GET", "POST"])

@@ -4,6 +4,11 @@ import threads
 import topics
 from flask import abort, redirect, render_template, request, session
 
+@app.after_request
+def add_header(response):
+    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    return response
+
 #Front page
 @app.route("/")
 def index():

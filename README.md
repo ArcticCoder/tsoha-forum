@@ -23,4 +23,4 @@ Ohjelman uusin versio löytyy [Herokusta](https://secure-thicket-61219.herokuapp
 ## Suunniteltuja ominaisuuksia
 * Käyttäjä voi etsiä kaikki ketjut, joiden otsikossa on annettu sana.
 * Käyttäjä voi etsiä kaikki viestit, koko sivulta tai tietystä ketjusta, joiden osana on annettu sana.
-* JOKIN UUSI TOIMINTO
+* Käyttäjä voi tykätä toisten viesteistä tai ketjuista, tykkästen määrä näkyy kaikille

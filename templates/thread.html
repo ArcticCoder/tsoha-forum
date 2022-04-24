@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<a href="/topic/{{topic.id}}" topic>{{topic.topic}}</a><br>
+<a href="/thread/{{thread.id}}" topic>{{thread.subject}}</a><br>
+
+{% if session.get("user_id") %}
+	<form action="/create_message/{{thread.id}}" method="POST">
+		<p>Uusi viesti (1-10000 merkkiä):<br>
+		<textarea rows="10" cols = "100" maxlength="10000" name="message" required></textarea>
+		<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+		<input type="submit" value="Lähetä viesti">
+	</form>
+	<br>
+{% else %}
+	<p>Kirjaudu sisään osallistuaksesi keskusteluun!</p>
+{% endif%}
+
+{% for message in messages %}
+		<div message>
+		{{message.message}}
+		<br>
+		<span message_info> - {{message.user_id | get_username}} - {{message.time}} UTC </span>
+		{% if session.get("is_admin") or session.get("user_id") == message.user_id %}
+			<form action="/delete_message/{{message.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Poista viesti">
+			</form>
+		{% endif%}
+		</div>
+		<br>
+{% endfor%}
+
+{% endblock %}

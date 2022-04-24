@@ -1,4 +1,5 @@
 from app import app
+import messages
 import users
 import threads
 import topics
@@ -94,6 +95,16 @@ def restore_topic(id):
     return redirect("/")
 
 #THREADS
+@app.route("/thread/<int:id>", methods=["GET"])
+def thread(id):
+    if threads.exists(id):
+        thread = threads.get_thread(id)
+        topic = topics.get_topic(thread.topic_id)
+        if session.get("is_admin") or thread.visible or thread.user_id == session.get("user_id"):
+            return render_template("thread.html", topic=topic, thread=thread, messages=messages.get_all(id))
+        abort(401)
+    abort(404)
+
 #Thread creation
 @app.route("/create_thread/<int:topic_id>", methods=["GET", "POST"])
 def create_thread(topic_id):
@@ -114,7 +125,7 @@ def create_thread(topic_id):
         if not new_id:
             return render_template("index.html", topics=topics.get_all(), message="Tunnistamaton virhe!")
 
-        #TODO Create start message
+        messages.create_message(new_id, start_message)
 
         return redirect(f"/thread/{new_id}")
 
@@ -125,7 +136,7 @@ def delete_thread(id):
     if not (session.get("is_admin") or session.get("user_id") == thread.user_id):
         abort(401)
     if request.method == "GET":
-        return render_template("delete_thread.html", id=id, thread=threads.get_thread(id))
+        return render_template("delete_thread.html", thread=threads.get_thread(id))
     if request.method == "POST":
         threads.delete_thread(id)
     return redirect(f"/topic/{thread.topic_id}")
@@ -136,6 +147,31 @@ def restore_thread(id):
     threads.restore_thread(id)
     thread = threads.get_thread(id)
     return redirect(f"/topic/{thread.topic_id}")
+
+#MESSAGES
+#Creating messages
+@app.route("/create_message/<int:thread_id>", methods=["POST"])
+def create_message(thread_id):
+    message = request.form["message"]
+    if len(message) < 1 or len(message) > 10000:
+        return render_template("thread.html", thread=threads.get_thread(id), messages=messages.get_all(id), 
+                message="Viestin pituus väärä!")
+    messages.create_message(thread_id, message)
+    return redirect(f"/thread/{thread_id}")
+
+#Message deletion
+@app.route("/delete_message/<int:id>", methods=["GET", "POST"])
+def delete_message(id):
+    message = messages.get_message(id)
+    if not message:
+        abort(404)
+    if not (session.get("is_admin") or message.user_id == session.get("user_id")):
+        abort(401)
+    if request.method == "GET":
+        return render_template("delete_message.html", deletable_message=message)
+    if request.method == "POST":
+        messages.delete_message(id)
+    return redirect(f"/thread/{message.thread_id}")
 
 #MISSING PAGE
 @app.errorhandler(404)

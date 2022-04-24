@@ -156,6 +156,8 @@ def delete_thread(id):
 def restore_thread(id):
     threads.restore_thread(id)
     thread = threads.get_thread(id)
+    if thread:
+        return redirect(f"/thread/{id}")
     return redirect(f"/topic/{thread.topic_id}")
 
 #MESSAGES

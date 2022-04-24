@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form action="/delete_message/{{deletable_message.id}}" method="POST">
+	<p><b>HALUATKO VARMASTI POISTAA SEURAAVAN VIESTIN:</b></p>
+	<p>{{deletable_message.message}}</p>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Poista viesti">
+</form>
+
+{% endblock %}

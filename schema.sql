@@ -24,5 +24,21 @@ CREATE TABLE threads(
 		FOREIGN KEY(user_id)
 			REFERENCES users(id)
 );
-CREATE INDEX topic_id_index ON threads(topic_id);
-CREATE INDEX user_id_index ON threads(user_id);
+CREATE INDEX thread_topic_id_index ON threads(topic_id);
+CREATE INDEX thread_user_id_index ON threads(user_id);
+
+CREATE TABLE messages(
+	id SERIAL PRIMARY KEY,
+	thread_id INTEGER NOT NULL,
+	user_id INTEGER NOT NULL,
+	message TEXT NOT NULL,
+	time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT fk_thread
+		FOREIGN KEY(thread_id)
+			REFERENCES threads(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+);
+CREATE INDEX message_thread_id_index ON messages(thread_id);
+CREATE INDEX message_user_id_index ON messages(user_id);

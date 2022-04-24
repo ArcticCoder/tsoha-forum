@@ -5,13 +5,19 @@ import topics
 
 def get_all(id):
     if session.get("is_admin"):
-        sql = "SELECT id, user_id, subject, visible FROM threads WHERE topic_id=:id ORDER BY visible DESC , subject;"
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, "\
+                "COUNT(B.id) as message_count, TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest "\
+                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id WHERE A.topic_id=:id "\
+                "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
     else:
-        sql = "SELECT id, user_id, subject, visible FROM threads WHERE topic_id=:id and (visible=true OR user_id=:user_id) ORDER BY visible DESC, subject;"
-    return db.session.execute(sql, {"id":id, "user_id":session.get("user_id")}).fetchall()
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, "\
+                "COUNT(B.id) as message_count, TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest "\
+                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id AND A.visible=true WHERE A.topic_id=:id "\
+                "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
+    return db.session.execute(sql, {"id":id}).fetchall()
 
 def get_thread(id : int):
-    sql = "SELECT topic_id, user_id, subject, visible FROM threads WHERE id=:id;"
+    sql = "SELECT id, topic_id, user_id, subject, visible FROM threads WHERE id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()
     return result
 
@@ -48,15 +54,17 @@ def create_thread(topic_id, subject):
 def delete_thread(id : int):
     check_csrf()
     thread = get_thread(id)
-    if session.get("is_admin") or session.get("user_id") == thread.user_id:
-        sql = "UPDATE threads SET visible =false WHERE id=:id;"
-        db.session.execute(sql, {"id":id})
-        db.session.commit()
+    if thread:
+        if session.get("is_admin") or session.get("user_id") == thread.user_id:
+            sql = "UPDATE threads SET visible =false WHERE id=:id;"
+            db.session.execute(sql, {"id":id})
+            db.session.commit()
 
 def restore_thread(id : int):
     check_csrf()
     thread = get_thread(id)
-    if session.get("is_admin") or session.get("user_id") == thread.user_id:
-        sql = "UPDATE threads SET visible =true WHERE id=:id;"
-        db.session.execute(sql, {"id":id})
-        db.session.commit()
+    if thread:
+        if session.get("is_admin") or session.get("user_id") == thread.user_id:
+            sql = "UPDATE threads SET visible =true WHERE id=:id;"
+            db.session.execute(sql, {"id":id})
+            db.session.commit()

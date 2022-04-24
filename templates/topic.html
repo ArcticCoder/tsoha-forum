@@ -11,6 +11,8 @@
 		<input type="submit" value="Aloita uusi ketju">
 	</form>
 	<br>
+{% else %}
+	<p>Kirjaudu sisään aloittaaksesi uusi ketju!</p>
 {% endif%}
 
 {% for thread in threads %}
@@ -31,7 +33,7 @@
 		{% endif%}
 	{% endif %}
 
-	<span topic_info>Viestejä: X, Viimeisin viesti: YYYY-MM-DD HH:MM </span>
+	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}}, Viimeisin: {{thread.latest}} UTC </span>
 
 	</a><br>
 {% endfor%}

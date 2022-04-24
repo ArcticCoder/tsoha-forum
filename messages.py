@@ -4,13 +4,13 @@ from flask import session
 import threads
 
 def get_all(id):
-    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time "\
-            "FROM messages WHERE thread_id=:thread_id ORDER BY time DESC, message;"
+    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
+            "TO_CHAR(last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time FROM messages WHERE thread_id=:thread_id ORDER BY time DESC, message;"
     return db.session.execute(sql, {"thread_id":id}).fetchall()
 
 def get_message(id):
-    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time "\
-            "FROM messages WHERE id=:id;"
+    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
+            "TO_CHAR(last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time FROM messages WHERE id=:id;"
     return db.session.execute(sql, {"id":id}).fetchone()
 
 def visible(id):
@@ -32,6 +32,18 @@ def create_message(thread_id, message):
             db.session.commit()
         except:
             pass
+
+def edit_message(id, new_message):
+    check_csrf()
+    message = get_message(id)
+    if message:
+        if session.get("user_id") == message.user_id and len(new_message) > 0 and len(new_message) <= 10000:
+            try:
+                sql = "UPDATE messages SET message=:new_message, last_edit=CURRENT_TIMESTAMP WHERE id=:id;"
+                db.session.execute(sql, {"id":id, "new_message":new_message})
+                db.session.commit()
+            except:
+                pass
 
 def delete_message(id : int):
     check_csrf()

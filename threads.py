@@ -12,9 +12,9 @@ def get_all(id):
     else:
         sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, "\
                 "COUNT(B.id) as message_count, TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest "\
-                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id AND A.visible=true WHERE A.topic_id=:id "\
+                "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id WHERE (A.visible=true OR A.user_id=:user_id) AND A.topic_id=:id "\
                 "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
-    return db.session.execute(sql, {"id":id}).fetchall()
+    return db.session.execute(sql, {"id":id, "user_id":session.get("user_id")}).fetchall()
 
 def get_thread(id : int):
     sql = "SELECT id, topic_id, user_id, subject, visible FROM threads WHERE id=:id;"

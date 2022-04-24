@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<p>Viestit, joissa esiintyy "{{search_term}}"</p>
+
+{% for message in results%}
+	<a href="/thread/{{message.thread_id}}" message>
+		{{message.message}}
+		<br>
+		<span message_info> - {{message.user_id | get_username}} - {{message.time}} UTC
+			{% if message.time != message.edit_time %}
+				 - Muokattu: {{message.edit_time}} UTC
+			{% endif%}
+		</span>
+		{% if session.get("user_id") == message.user_id %}
+			<form action="/edit_message/{{message.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Muokkaa viestiä">
+			</form>
+		{% endif%}
+		{% if session.get("is_admin") or session.get("user_id") == message.user_id %}
+			<form action="/delete_message/{{message.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Poista viesti">
+			</form>
+		{% endif%}
+		</a>
+		<br>
+{% endfor%}
+
+{% endblock %}

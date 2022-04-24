@@ -13,6 +13,12 @@ def get_message(id):
             "TO_CHAR(last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time FROM messages WHERE id=:id;"
     return db.session.execute(sql, {"id":id}).fetchone()
 
+def search(search_term : str):
+    sql = "SELECT A.id, A.thread_id, A.user_id, A.message, TO_CHAR(A.time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
+            "TO_CHAR(A.last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time FROM messages A JOIN threads B ON A.thread_id=B.id "\
+            "AND B.visible=true WHERE LOWER(message) LIKE LOWER(:search_term);"
+    return db.session.execute(sql, {"search_term":"%"+search_term+"%"}).fetchall()
+
 def visible(id):
     sql = "SELECT visible FROM messages WHERE id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()

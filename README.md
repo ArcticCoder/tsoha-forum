@@ -13,6 +13,7 @@ Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvi
 * Ylläpitäjä voi lisätä ja poistaa keskustelualueita.
 * Käyttäjä voi luoda alueelle uuden ketjun antamalla ketjun otsikon ja aloitusviestin sisällön
 * Käyttäjä voi kirjoittaa uuden viestin olemassa olevaan ketjuun.
+* Käyttäjä voi muokata lähettämänsä viestin sisältöä. Muokkauksesta jää muille näkyvä jälki
 * Käyttäjä voi poistaa oman ketjun tai viestin.
 * Ylläpitäjä voi poistaa yksittäisiä viestejä tai kokonaisia ketjuja
 
@@ -20,7 +21,6 @@ Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvi
 Ohjelman uusin versio löytyy [Herokusta](https://secure-thicket-61219.herokuapp.com/). Huomioi, että vain yllämainittu rajallinen määrä ominaisuuksia on toteutettu. Testaamisen mahdollistamiseksi alustalle on luotu valmiiksi muutama (tyhjä) alue ja testauskäyttöön soveltuva väliaikainen ylläpitäjä-tili käyttäjänimellä admin ja salasanalla TestiAdmin
 
 ## Suunniteltuja ominaisuuksia
-* Käyttäjä voi muokata lähettämänsä viestin sisältöä. Muokkauksesta jää muille näkyvä jälki
 * Käyttäjä voi etsiä kaikki ketjut, joiden otsikossa on annettu sana.
 * Käyttäjä voi etsiä kaikki viestit, koko sivulta tai tietystä ketjusta, joiden osana on annettu sana.
 * JOKIN UUSI TOIMINTO

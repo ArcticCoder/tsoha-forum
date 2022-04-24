@@ -2,7 +2,13 @@
 {% block content %}
 
 <a href="/topic/{{topic.id}}" topic>{{topic.topic}}</a><br>
-<a href="/thread/{{thread.id}}" topic>{{thread.subject}}</a><br>
+<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
+	{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
+		<form action="/delete_thread/{{thread.id}}" method="GET" style="display: inline">
+		<input type="submit" value="Poista ketju">
+		</form>
+	{% endif%}
+</a><br>
 
 {% if session.get("user_id") %}
 	<form action="/create_message/{{thread.id}}" method="POST">
@@ -20,7 +26,16 @@
 		<div message>
 		{{message.message}}
 		<br>
-		<span message_info> - {{message.user_id | get_username}} - {{message.time}} UTC </span>
+		<span message_info> - {{message.user_id | get_username}} - {{message.time}} UTC
+			{% if message.time != message.edit_time %}
+				 - Muokattu: {{message.edit_time}} UTC
+			{% endif%}
+		</span>
+		{% if session.get("user_id") == message.user_id %}
+			<form action="/edit_message/{{message.id}}" method="GET" style="display: inline">
+			<input type="submit" value="Muokkaa viestiä">
+			</form>
+		{% endif%}
 		{% if session.get("is_admin") or session.get("user_id") == message.user_id %}
 			<form action="/delete_message/{{message.id}}" method="GET" style="display: inline">
 			<input type="submit" value="Poista viesti">

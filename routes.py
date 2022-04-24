@@ -159,6 +159,24 @@ def create_message(thread_id):
     messages.create_message(thread_id, message)
     return redirect(f"/thread/{thread_id}")
 
+#Editing message
+@app.route("/edit_message/<int:id>", methods=["GET", "POST"])
+def edit_message(id):
+    message = messages.get_message(id)
+    if message:
+        thread = threads.get_thread(message.thread_id)
+        topic = topics.get_topic(thread.topic_id)
+        if session.get("user_id") != message.user_id:
+            abort(401)
+        if request.method == "GET":
+            return render_template("edit_message.html", topic=topic, thread=thread, edit_message=message)
+        if request.method == "POST":
+            new_message = request.form["new_message"]
+            if new_message != message.message:
+                messages.edit_message(id, new_message)
+        return redirect(f"/thread/{thread.id}")
+
+
 #Message deletion
 @app.route("/delete_message/<int:id>", methods=["GET", "POST"])
 def delete_message(id):

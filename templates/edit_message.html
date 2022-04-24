@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<a href="/topic/{{topic.id}}" topic>{{topic.topic}}<span topic_info></span></a><br>
+<a href="/thread/{{thread.id}}" topic>{{thread.subject}}</a><br>
+
+<form action="/edit_message/{{edit_message.id}}" method="POST">
+	<p>Viesti (1-10000 merkkiä):<br>
+	<textarea rows="10" cols = "100" maxlength="10000" name="new_message" required>{{edit_message.message}}</textarea>
+	<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+	<input type="submit" value="Päivitä viesti">
+</form>
+
+{% endblock %}

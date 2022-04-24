@@ -23,4 +23,4 @@ Ohjelman uusin versio löytyy [Herokusta](https://secure-thicket-61219.herokuapp
 * Käyttäjä voi muokata luomansa ketjun otsikkoa sekä lähettämänsä viestin sisältöä. Muokkauksesta jää muille näkyvä jälki
 * Käyttäjä voi etsiä kaikki ketjut, joiden otsikossa on annettu sana.
 * Käyttäjä voi etsiä kaikki viestit, koko sivulta tai tietystä ketjusta, joiden osana on annettu sana.
-* Käyttäjä voi lähettää yksityisviestejä toisille käyttäjille ja estää yksityisviestit tietyltä käyttäjältä
+* JOKIN UUSI TOIMINTO

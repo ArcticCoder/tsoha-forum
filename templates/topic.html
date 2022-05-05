@@ -33,7 +33,8 @@
 		{% endif%}
 	{% endif %}
 
-	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}}, Viimeisin: {{thread.latest}} UTC</span>
+	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}}
+		{% if thread.latest %}, Viimeisin: {{thread.latest}} UTC{% endif %}</span>
 
 	</a><br>
 {% endfor%}

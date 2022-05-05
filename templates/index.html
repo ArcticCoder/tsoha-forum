@@ -19,7 +19,8 @@
 		{% endif%}
 	{% endif %}
 
-	<span topic_info>Ketjuja: {{topic.thread_count}}, Viestejä {{topic.message_count}}, Viimeisin: {{topic.latest}} UTC </span>
+	<span topic_info>Ketjuja: {{topic.thread_count}}, Viestejä {{topic.message_count}}
+		{% if topic.latest %}, Viimeisin: {{topic.latest}} UTC {% endif %}</span>
 
 	</a><br>
 {% endfor%}

@@ -6,23 +6,26 @@ import threads
 
 
 def get_all(id):
-    sql = "SELECT A.id, A.thread_id, A.user_id, A.message, TO_CHAR(A.time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
-        "TO_CHAR(A.last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time, COALESCE(SUM(B.amount), 0) as likes "\
-        "FROM messages A LEFT JOIN message_likes B ON A.id=B.message_id WHERE A.thread_id=:thread_id "\
-        "GROUP BY A.id ORDER BY A.time DESC, A.message;"
+    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
+        "TO_CHAR(last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time, "\
+        "(SELECT COALESCE(SUM(amount), 0) FROM message_likes WHERE message_id = id) as likes "\
+        "FROM messages WHERE thread_id=:thread_id ORDER BY time DESC, message;"
     return db.session.execute(sql, {"thread_id": id}).fetchall()
 
 
 def get_message(id):
-    sql = "SELECT A.id, A.thread_id, A.user_id, A.message, TO_CHAR(A.time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
-        "TO_CHAR(A.last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time, COALESCE(SUM(B.amount), 0) as likes "\
-        "FROM messages A LEFT JOIN message_likes B ON A.id=B.message_id WHERE A.id=:id GROUP BY A.id;"
+    sql = "SELECT id, thread_id, user_id, message, TO_CHAR(time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
+        "TO_CHAR(last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time, "\
+        "(SELECT COALESCE(SUM(amount), 0) FROM message_likes WHERE message_id = id) as likes "\
+        "FROM messages WHERE id=:id;"
     return db.session.execute(sql, {"id": id}).fetchone()
 
 
 def search(search_term: str):
     sql = "SELECT A.id, A.thread_id, A.user_id, A.message, TO_CHAR(A.time AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as time, "\
-        "TO_CHAR(A.last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time FROM messages A JOIN threads B ON A.thread_id=B.id "\
+        "TO_CHAR(A.last_edit AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as edit_time, "\
+        "(SELECT COALESCE(SUM(amount), 0) FROM message_likes WHERE message_id = A.id) as likes "\
+        "FROM messages A JOIN threads B ON A.thread_id=B.id "\
         "AND B.visible=true WHERE LOWER(message) LIKE LOWER(:search_term);"
     return db.session.execute(sql, {"search_term": "%"+search_term+"%"}).fetchall()
 

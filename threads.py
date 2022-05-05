@@ -7,16 +7,19 @@ import topics
 
 def get_all(id):
     if session.get("is_admin"):
-        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(DISTINC(B.id)) as message_count, "\
-            "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, COALESCE(SUM(C.amount), 0) as likes "\
-            "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id LEFT JOIN thread_likes C ON A.id=C.thread_id "\
-            "WHERE A.topic_id=:id GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(B.id) as message_count, "\
+              "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, "\
+              "(SELECT COALESCE(SUM(amount), 0) FROM thread_likes WHERE thread_id=A.id) as likes "\
+              "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id "\
+              "WHERE A.topic_id=:id "\
+              "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
     else:
-        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(DISTINCT(B.id)) as message_count, "\
-            "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, COALESCE(SUM(C.amount), 0) as likes "\
-            "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id LEFT JOIN thread_likes C ON A.id=C.thread_id "\
-            "WHERE (A.visible=true OR A.user_id=:user_id) AND A.topic_id=:id "\
-            "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(B.id) as message_count, "\
+              "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, "\
+              "(SELECT COALESCE(SUM(amount), 0) FROM thread_likes WHERE thread_id=A.id) as likes "\
+              "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id "\
+              "WHERE (A.visible=true OR A.user_id=:user_id) AND A.topic_id=:id "\
+              "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
     return db.session.execute(sql, {"id": id, "user_id": session.get("user_id")}).fetchall()
 
 
@@ -28,16 +31,18 @@ def get_thread(id: int):
 
 def search(search_term: str):
     if session.get("is_admin"):
-        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(DISTINCT(B.id)) as message_count, "\
-            "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, COALESCE(SUM(C.amount), 0) as likes "\
-            "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id LEFT JOIN thread_likes C ON A.id=C.thread_id "\
-            "WHERE LOWER(A.subject) LIKE LOWER(:search_term) GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(B.id) as message_count, "\
+              "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, "\
+              "(SELECT COALESCE(SUM(amount), 0) FROM thread_likes WHERE thread_id=A.id) as likes "\
+              "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id "\
+              "WHERE LOWER(A.subject) LIKE LOWER(:search_term) GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
     else:
-        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(DISTINCT(B.id)) as message_count, "\
-            "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, COALESCE(SUM(C.amount), 0) as likes "\
-            "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id LEFT JOIN thread_likes C ON A.id=C.thread_id "\
-            "WHERE (A.visible=true OR A.user_id=:user_id) AND LOWER(A.subject) LIKE LOWER(:search_term) "\
-            "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
+        sql = "SELECT A.id, A.topic_id, A.user_id, A.subject, A.visible, COUNT(B.id) as message_count, "\
+              "TO_CHAR(MAX(B.time) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') as latest, "\
+              "(SELECT COALESCE(SUM(amount), 0) FROM thread_likes WHERE thread_id=A.id) as likes "\
+              "FROM threads A LEFT JOIN messages B ON A.id=B.thread_id "\
+              "WHERE (A.visible=true OR A.user_id=:user_id) AND LOWER(A.subject) LIKE LOWER(:search_term) "\
+              "GROUP BY A.id ORDER BY A.visible DESC , latest DESC, A.subject;"
     return db.session.execute(sql, {"user_id": session.get("user_id"), "search_term": "%"+search_term+"%"}).fetchall()
 
 

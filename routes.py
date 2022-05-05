@@ -5,17 +5,23 @@ import threads
 import topics
 from flask import abort, redirect, render_template, request, session
 
+
 @app.after_request
 def add_header(response):
-    response.headers.add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+    response.headers.add(
+        "Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
     return response
 
-#Front page
+# Front page
+
+
 @app.route("/")
 def index():
     return render_template("index.html", topics=topics.get_all())
 
-#Search
+# Search
+
+
 @app.route("/search", methods=["POST"])
 def search():
     search_term = request.form["term"]
@@ -25,8 +31,10 @@ def search():
         return render_template("message_search.html", search_term=search_term, results=messages.search(search_term))
     return render_template("index.html", topics=topics.get_all(), message="Tunnistamaton virhe")
 
-#ACCOUNTS
-#Login
+# ACCOUNTS
+# Login
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -38,13 +46,17 @@ def login():
             return redirect("/")
         return render_template("login.html", message="Käyttäjänimi tai salasana väärin!")
 
-#Logout "page"
+# Logout "page"
+
+
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect("/")
 
-#Account creation
+# Account creation
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -68,8 +80,10 @@ def register():
 
         return render_template("register.html", message="Tunnistamaton virhe, yritä uudelleen tai ota yhteys ylläpitäjään! (vili.sinerva@helsinki.fi)")
 
-#TOPICS
-#Open topic
+# TOPICS
+# Open topic
+
+
 @app.route("/topic/<int:id>", methods=["GET"])
 def topic(id):
     if topics.exists(id):
@@ -78,7 +92,9 @@ def topic(id):
         abort(401)
     abort(404)
 
-#Topic creation
+# Topic creation
+
+
 @app.route("/create_topic", methods=["POST"])
 def create_topic():
     topic = request.form["topic"]
@@ -87,10 +103,12 @@ def create_topic():
     topics.create_topic(topic)
     return redirect("/")
 
-#Topic deletion
+# Topic deletion
+
+
 @app.route("/delete_topic/<int:id>", methods=["GET", "POST"])
 def delete_topic(id):
-    if not session.get("is_admin") :
+    if not session.get("is_admin"):
         abort(401)
     if request.method == "GET":
         return render_template("delete_topic.html", topic=topics.get_topic(id))
@@ -98,13 +116,17 @@ def delete_topic(id):
         topics.delete_topic(id)
     return redirect("/")
 
-#Topic restoration (un-deletion)
+# Topic restoration (un-deletion)
+
+
 @app.route("/restore_topic/<int:id>", methods=["POST"])
 def restore_topic(id):
     topics.restore_topic(id)
     return redirect("/")
 
-#THREADS
+# THREADS
+
+
 @app.route("/thread/<int:id>", methods=["GET"])
 def thread(id):
     if threads.exists(id):
@@ -115,7 +137,9 @@ def thread(id):
         abort(401)
     abort(404)
 
-#Thread creation
+# Thread creation
+
+
 @app.route("/create_thread/<int:topic_id>", methods=["GET", "POST"])
 def create_thread(topic_id):
     if not session.get("user_id"):
@@ -139,7 +163,9 @@ def create_thread(topic_id):
 
         return redirect(f"/thread/{new_id}")
 
-#Thread deletion
+# Thread deletion
+
+
 @app.route("/delete_thread/<int:id>", methods=["GET", "POST"])
 def delete_thread(id):
     thread = threads.get_thread(id)
@@ -151,7 +177,9 @@ def delete_thread(id):
         threads.delete_thread(id)
     return redirect(f"/topic/{thread.topic_id}")
 
-#Thread restoration (un-deletion)
+# Thread restoration (un-deletion)
+
+
 @app.route("/restore_thread/<int:id>", methods=["POST"])
 def restore_thread(id):
     threads.restore_thread(id)
@@ -160,7 +188,9 @@ def restore_thread(id):
         return redirect(f"/thread/{id}")
     return redirect("/")
 
-#Like thread
+# Like thread
+
+
 @app.route("/like_thread", methods=["POST"])
 def like_thread():
     id = request.form["thread_id"]
@@ -171,7 +201,9 @@ def like_thread():
     else:
         return redirect("/")
 
-#Dislike thread
+# Dislike thread
+
+
 @app.route("/dislike_thread", methods=["POST"])
 def dislike_thread():
     id = request.form["thread_id"]
@@ -182,7 +214,9 @@ def dislike_thread():
     else:
         return redirect("/")
 
-#Remove vote from thread
+# Remove vote from thread
+
+
 @app.route("/remove_thread_vote", methods=["POST"])
 def remove_thread_vote():
     id = request.form["thread_id"]
@@ -193,18 +227,22 @@ def remove_thread_vote():
     else:
         return redirect("/")
 
-#MESSAGES
-#Creating messages
+# MESSAGES
+# Creating messages
+
+
 @app.route("/create_message/<int:thread_id>", methods=["POST"])
 def create_message(thread_id):
     message = request.form["message"]
     if len(message) < 1 or len(message) > 10000:
-        return render_template("thread.html", thread=threads.get_thread(id), messages=messages.get_all(id), 
-                message="Viestin pituus väärä!")
+        return render_template("thread.html", thread=threads.get_thread(id), messages=messages.get_all(id),
+                               message="Viestin pituus väärä!")
     messages.create_message(thread_id, message)
     return redirect(f"/thread/{thread_id}")
 
-#Editing message
+# Editing message
+
+
 @app.route("/edit_message/<int:id>", methods=["GET", "POST"])
 def edit_message(id):
     message = messages.get_message(id)
@@ -222,7 +260,7 @@ def edit_message(id):
         return redirect(f"/thread/{thread.id}")
 
 
-#Message deletion
+# Message deletion
 @app.route("/delete_message/<int:id>", methods=["GET", "POST"])
 def delete_message(id):
     message = messages.get_message(id)
@@ -236,7 +274,9 @@ def delete_message(id):
         messages.delete_message(id)
     return redirect(f"/thread/{message.thread_id}")
 
-#Like message
+# Like message
+
+
 @app.route("/like_message", methods=["POST"])
 def like_message():
     id = request.form["message_id"]
@@ -247,7 +287,9 @@ def like_message():
     else:
         return redirect("/")
 
-#Dislike message
+# Dislike message
+
+
 @app.route("/dislike_message", methods=["POST"])
 def dislike_message():
     id = request.form["message_id"]
@@ -258,7 +300,9 @@ def dislike_message():
     else:
         return redirect("/")
 
-#Remove vote from message
+# Remove vote from message
+
+
 @app.route("/remove_message_vote", methods=["POST"])
 def remove_message_vote():
     id = request.form["message_id"]
@@ -269,7 +313,9 @@ def remove_message_vote():
     else:
         return redirect("/")
 
-#MISSING PAGE
+# MISSING PAGE
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("index.html", topics=topics.get_all(), message="Sivua ei löytynyt!")

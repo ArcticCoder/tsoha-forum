@@ -7,7 +7,7 @@ from flask import abort, redirect, render_template, request, session
 
 @app.after_request
 def add_header(response):
-    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    response.headers.add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
     return response
 
 #Front page
@@ -158,7 +158,40 @@ def restore_thread(id):
     thread = threads.get_thread(id)
     if thread:
         return redirect(f"/thread/{id}")
-    return redirect(f"/topic/{thread.topic_id}")
+    return redirect("/")
+
+#Like thread
+@app.route("/like_thread", methods=["POST"])
+def like_thread():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.like_thread(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
+
+#Dislike thread
+@app.route("/dislike_thread", methods=["POST"])
+def dislike_thread():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.dislike_thread(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
+
+#Remove vote from thread
+@app.route("/remove_thread_vote", methods=["POST"])
+def remove_thread_vote():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.remove_vote(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
 
 #MESSAGES
 #Creating messages

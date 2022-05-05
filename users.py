@@ -41,7 +41,7 @@ def register(username : str, password : str):
 
     return login(username, password)
 
-@app.template_filter('get_username')
+@app.template_filter("get_username")
 def get_username(id):
     sql = "SELECT username FROM users WHERE id=:id;"
     result = db.session.execute(sql, {"id":id})

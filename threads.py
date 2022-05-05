@@ -97,8 +97,8 @@ def restore_thread(id: int):
 
 @app.template_filter("check_thread_vote")
 def check_thread_vote(id: int):
-    sql = "SELECT amount FROM thread_likes WHERE thread_id=:id;"
-    result = db.session.execute(sql, {"id": id}).fetchone()
+    sql = "SELECT amount FROM thread_likes WHERE thread_id=:id AND user_id=:user_id;"
+    result = db.session.execute(sql, {"id": id, "user_id": session.get("user_id")}).fetchone()
     if result:
         return result[0]
     return result

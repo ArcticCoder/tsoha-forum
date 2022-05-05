@@ -75,8 +75,8 @@ def delete_message(id: int):
 
 @app.template_filter("check_message_vote")
 def check_message_vote(id: int):
-    sql = "SELECT amount FROM message_likes WHERE message_id=:id;"
-    result = db.session.execute(sql, {"id": id}).fetchone()
+    sql = "SELECT amount FROM message_likes WHERE message_id=:id AND user_id=:user_id;"
+    result = db.session.execute(sql, {"id": id, "user_id":session.get("user_id")}).fetchone()
     if result:
         return result[0]
     return result

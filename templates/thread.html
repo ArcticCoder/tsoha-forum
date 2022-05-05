@@ -5,27 +5,27 @@
 <a href="/thread/{{thread.id}}" topic>{{thread.subject}}
 	{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
 		{% if session.get("user_id") %}
-			{% if thread.id | check_vote == 1 %}
-				<form action="" class="remove_vote_form" style="display: inline">
+			{% if thread.id | check_thread_vote == 1 %}
+				<form action="" class="remove_vote_thread_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 				<input type="submit" style="background-color: lightblue" value="+1">
 				</form>
 			{% else %}
-				<form action="" class="like_form" style="display: inline">
+				<form action="" class="like_thread_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 				<input type="submit" value="+1">
 				</form>
 			{% endif %}
-			{% if thread.id | check_vote == -1 %}
-				<form action="" class="remove_vote_form" style="display: inline">
+			{% if thread.id | check_thread_vote == -1 %}
+				<form action="" class="remove_vote_thread_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 				<input type="submit" style="background-color: lightblue" value="-1">
 				</form>
 			{% else %}
-				<form action="" class="dislike_form" style="display: inline">
+				<form action="" class="dislike_thread_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
 				<input type="submit" value="-1">
@@ -63,7 +63,36 @@
 		<div message>
 		{{message.message}}
 		<br>
-		<span message_info> - {{message.user_id | get_username}} - {{message.time}} UTC
+		{% if session.get("user_id") %}
+			{% if message.id | check_message_vote == 1 %}
+				<form action="" class="remove_vote_message_form" style="display: inline">
+				<input type="hidden" name="message_id" value={{message.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" style="background-color: lightblue" value="+1">
+				</form>
+			{% else %}
+				<form action="" class="like_message_form" style="display: inline">
+				<input type="hidden" name="message_id" value={{message.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" value="+1">
+				</form>
+			{% endif %}
+			{% if message.id | check_message_vote == -1 %}
+				<form action="" class="remove_vote_message_form" style="display: inline">
+				<input type="hidden" name="message_id" value={{message.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" style="background-color: lightblue" value="-1">
+				</form>
+			{% else %}
+				<form action="" class="dislike_message_form" style="display: inline">
+				<input type="hidden" name="message_id" value={{message.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" value="-1">
+				</form>
+			{% endif %}
+		{% endif%}
+
+		<span message_info>{{message.user_id | get_username}} - Tykkäyksiä: {{message.likes}} - {{message.time}} UTC
 			{% if message.time != message.edit_time %}
 				 - Muokattu: {{message.edit_time}} UTC
 			{% endif%}
@@ -84,7 +113,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
-	$(".like_form").on("submit", function(event) {
+	$(".like_thread_form").on("submit", function(event) {
 		var dataString = $(this).serialize();
 
 		$.ajax({
@@ -95,7 +124,7 @@
 		window.location.reload();
 		e.preventDefault();
 	});
-	$(".dislike_form").on("submit", function(event) {
+	$(".dislike_thread_form").on("submit", function(event) {
 		var dataString = $(this).serialize();
 
 		$.ajax({
@@ -106,12 +135,45 @@
 		window.location.reload();
 		e.preventDefault();
 	});
-	$(".remove_vote_form").on("submit", function(event) {
+	$(".remove_vote_thread_form").on("submit", function(event) {
 		var dataString = $(this).serialize();
 
 		$.ajax({
 			method: "POST",
 			url: "/remove_thread_vote",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+	$(".like_message_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/like_message",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+	$(".dislike_message_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/dislike_message",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+	$(".remove_vote_message_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/remove_message_vote",
 			data: dataString
 		});
 		window.location.reload();

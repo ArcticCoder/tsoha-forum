@@ -19,7 +19,7 @@
 	{% if thread.visible %}
 		<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
 		{% if session.get("user_id") %}
-			{% if thread.id | check_vote == 1 %}
+			{% if thread.id | check_thread_vote == 1 %}
 				<form action="" class="remove_vote_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
@@ -32,7 +32,7 @@
 				<input type="submit" value="+1">
 				</form>
 			{% endif %}
-			{% if thread.id | check_vote == -1 %}
+			{% if thread.id | check_thread_vote == -1 %}
 				<form action="" class="remove_vote_form" style="display: inline">
 				<input type="hidden" name="thread_id" value={{thread.id}}>
 				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">

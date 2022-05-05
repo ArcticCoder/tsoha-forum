@@ -236,6 +236,39 @@ def delete_message(id):
         messages.delete_message(id)
     return redirect(f"/thread/{message.thread_id}")
 
+#Like message
+@app.route("/like_message", methods=["POST"])
+def like_message():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.like_message(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
+
+#Dislike message
+@app.route("/dislike_message", methods=["POST"])
+def dislike_message():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.dislike_message(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
+
+#Remove vote from message
+@app.route("/remove_message_vote", methods=["POST"])
+def remove_message_vote():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.remove_vote(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
+
 #MISSING PAGE
 @app.errorhandler(404)
 def page_not_found(e):

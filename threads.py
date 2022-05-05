@@ -85,8 +85,8 @@ def restore_thread(id : int):
             db.session.execute(sql, {"id":id})
             db.session.commit()
 
-@app.template_filter("check_vote")
-def check_vote(id : int):
+@app.template_filter("check_thread_vote")
+def check_thread_vote(id : int):
     sql = "SELECT amount FROM thread_likes WHERE thread_id=:id;"
     result = db.session.execute(sql, {"id":id}).fetchone()
     if result:
@@ -98,7 +98,7 @@ def vote(id : int, amount : int):
     thread = get_thread(id)
     if not thread.visible:
         return
-    if check_vote(id):
+    if check_thread_vote(id):
         sql = "UPDATE thread_likes SET amount=:amount WHERE thread_id=:thread_id AND user_id=:user_id;"
     else:
         sql = "INSERT INTO thread_likes(thread_id, user_id, amount) VALUES(:thread_id, :user_id, :amount);"

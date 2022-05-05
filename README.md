@@ -18,9 +18,7 @@ Alusta, jonne käyttäjät voivat luoda keskusteluketjuja eri aiheisiin liittyvi
 * Ylläpitäjä voi poistaa yksittäisiä viestejä tai kokonaisia ketjuja
 * Käyttäjä voi etsiä kaikki ketjut, joiden otsikossa on annettu hakusana.
 * Käyttäjä voi etsiä kaikki viestit joiden osana on annettu hakusana.
+* Käyttäjä voi tykätä toisten viesteistä tai ketjuista, tykkästen määrä näkyy kaikille
 
 ## Testaaminen Herokussa
 Ohjelman uusin versio löytyy [Herokusta](https://secure-thicket-61219.herokuapp.com/). Huomioi, että vain yllämainittu rajallinen määrä ominaisuuksia on toteutettu. Testaamisen mahdollistamiseksi alustalle on luotu valmiiksi muutama (tyhjä) alue ja testauskäyttöön soveltuva väliaikainen ylläpitäjä-tili käyttäjänimellä admin ja salasanalla TestiAdmin
-
-## Suunniteltuja ominaisuuksia
-* Käyttäjä voi tykätä toisten viesteistä tai ketjuista, tykkästen määrä näkyy kaikille

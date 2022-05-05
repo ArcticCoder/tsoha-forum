@@ -18,6 +18,35 @@
 {% for thread in threads %}
 	{% if thread.visible %}
 		<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
+		{% if session.get("user_id") %}
+			{% if thread.id | check_thread_vote == 1 %}
+				<form action="" class="remove_vote_form" style="display: inline">
+				<input type="hidden" name="thread_id" value={{thread.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" style="background-color: lightblue" value="+1">
+				</form>
+			{% else %}
+				<form action="" class="like_form" style="display: inline">
+				<input type="hidden" name="thread_id" value={{thread.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" value="+1">
+				</form>
+			{% endif %}
+			{% if thread.id | check_thread_vote == -1 %}
+				<form action="" class="remove_vote_form" style="display: inline">
+				<input type="hidden" name="thread_id" value={{thread.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" style="background-color: lightblue" value="-1">
+				</form>
+			{% else %}
+				<form action="" class="dislike_form" style="display: inline">
+				<input type="hidden" name="thread_id" value={{thread.id}}>
+				<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
+				<input type="submit" value="-1">
+				</form>
+			{% endif %}
+		{% endif%}
+
 		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
 			<form action="/delete_thread/{{thread.id}}" method="GET" style="display: inline">
 			<input type="submit" value="Poista ketju">
@@ -33,10 +62,47 @@
 		{% endif%}
 	{% endif %}
 
-	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}}
-		{% if thread.latest %}, Viimeisin: {{thread.latest}} UTC{% endif %}</span>
+	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}},
+		 Tykkäyksiä: {{thread.likes}}{% if thread.latest %}, Viimeisin: {{thread.latest}} UTC{% endif %}</span>
 
 	</a><br>
 {% endfor%}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+	$(".like_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/like_thread",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+	$(".dislike_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/dislike_thread",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+	$(".remove_vote_form").on("submit", function(event) {
+		var dataString = $(this).serialize();
+
+		$.ajax({
+			method: "POST",
+			url: "/remove_thread_vote",
+			data: dataString
+		});
+		window.location.reload();
+		e.preventDefault();
+	});
+</script>
 
 {% endblock %}

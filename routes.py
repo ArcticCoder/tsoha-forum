@@ -7,7 +7,7 @@ from flask import abort, redirect, render_template, request, session
 
 @app.after_request
 def add_header(response):
-    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    response.headers.add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
     return response
 
 #Front page
@@ -158,7 +158,40 @@ def restore_thread(id):
     thread = threads.get_thread(id)
     if thread:
         return redirect(f"/thread/{id}")
-    return redirect(f"/topic/{thread.topic_id}")
+    return redirect("/")
+
+#Like thread
+@app.route("/like_thread", methods=["POST"])
+def like_thread():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.like_thread(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
+
+#Dislike thread
+@app.route("/dislike_thread", methods=["POST"])
+def dislike_thread():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.dislike_thread(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
+
+#Remove vote from thread
+@app.route("/remove_thread_vote", methods=["POST"])
+def remove_thread_vote():
+    id = request.form["thread_id"]
+    thread = threads.get_thread(id)
+    if thread:
+        threads.remove_vote(thread.id)
+        return redirect(f"/topic/{thread.topic_id}")
+    else:
+        return redirect("/")
 
 #MESSAGES
 #Creating messages
@@ -202,6 +235,39 @@ def delete_message(id):
     if request.method == "POST":
         messages.delete_message(id)
     return redirect(f"/thread/{message.thread_id}")
+
+#Like message
+@app.route("/like_message", methods=["POST"])
+def like_message():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.like_message(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
+
+#Dislike message
+@app.route("/dislike_message", methods=["POST"])
+def dislike_message():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.dislike_message(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
+
+#Remove vote from message
+@app.route("/remove_message_vote", methods=["POST"])
+def remove_message_vote():
+    id = request.form["message_id"]
+    message = messages.get_message(id)
+    if message:
+        messages.remove_vote(message.id)
+        return redirect(f"/thread/{message.thread_id}")
+    else:
+        return redirect("/")
 
 #MISSING PAGE
 @app.errorhandler(404)

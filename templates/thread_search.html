@@ -6,22 +6,12 @@
 {% for thread in results%}
 	{% if thread.visible %}
 		<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
-		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
-			<form action="/delete_thread/{{thread.id}}" method="GET" style="display: inline">
-			<input type="submit" value="Poista ketju">
-			</form>
-		{% endif%}
 	{% else %}
 		<a href="/thread/{{thread.id}}" topic not_visible>{{thread.subject}} <em>(poistettu)</em>
-		{% if session.get("is_admin") or session.get("user_id") == thread.user_id %}
-			<form action="/restore_thread/{{thread.id}}" method="POST" style="display: inline">
-			<input type="hidden" name="csrf_token" value="{{ session.get("csrf_token") }}">
-			<input type="submit" value="Palauta ketju">
-			</form>
-		{% endif%}
 	{% endif %}
 
-	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}}, Viimeisin: {{thread.latest}} UTC</span>
+	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}},
+		 Tykkäyksiä: {{thread.likes}}{% if thread.latest %}, Viimeisin: {{thread.latest}} UTC{% endif %}</span>
 
 	</a><br>
 {% endfor%}

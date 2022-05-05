@@ -43,3 +43,33 @@ CREATE TABLE messages(
 );
 CREATE INDEX message_thread_id_index ON messages(thread_id);
 CREATE INDEX message_user_id_index ON messages(user_id);
+
+CREATE TABLE message_likes(
+	message_id INTEGER,
+	user_id INTEGER,
+	amount INTEGER,
+	PRIMARY KEY (message_id, user_id),
+	CONSTRAINT fk_message
+		FOREIGN KEY(message_id)
+			REFERENCES messages(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+);
+CREATE INDEX message_like_message_id_index ON message_likes(message_id);
+CREATE INDEX message_like_user_id_index ON message_likes(user_id);
+
+CREATE TABLE thread_likes(
+	thread_id INTEGER,
+	user_id INTEGER,
+	amount INTEGER,
+	PRIMARY KEY (thread_id, user_id),
+	CONSTRAINT fk_thread
+		FOREIGN KEY(thread_id)
+			REFERENCES threads(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+);
+CREATE INDEX thread_like_thread_id_index ON thread_likes(thread_id);
+CREATE INDEX thread_like_user_id_index ON thread_likes(user_id);

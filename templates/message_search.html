@@ -4,9 +4,7 @@
 <p>Viestit, joissa esiintyy "{{search_term}}"</p>
 
 {% for message in results%}
-	<a href="/thread/{{message.thread_id}}" message>
-		{{message.message}}
-		<br>
+	<a href="/thread/{{message.thread_id}}" message>{{message.message}}</a>
 		<span message_info>{{message.user_id | get_username}} - Tykkäyksiä: {{message.likes}} - {{message.time}} UTC
 			{% if message.time != message.edit_time %}
 				 - Muokattu: {{message.edit_time}} UTC
@@ -22,7 +20,8 @@
 			<input type="submit" value="Poista viesti">
 			</form>
 		{% endif%}
-		</a>
+
+		<br>
 		<br>
 {% endfor%}
 

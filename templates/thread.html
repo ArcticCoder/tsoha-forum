@@ -2,7 +2,7 @@
 {% block content %}
 
 <a href="/topic/{{topic.id}}" topic>{{topic.topic}}</a><br>
-<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
+<a href="/thread/{{thread.id}}" topic>{{thread.subject}}</a>
 	{% if session.get("user_id") %}
 		{% if thread.id | check_thread_vote == 1 %}
 			<form action="" class="remove_vote_thread_form" style="display: inline">
@@ -44,7 +44,8 @@
 			</form>
 		{% endif%}
 	{% endif%}
-</a><br>
+<br>
+<br>
 
 {% if session.get("user_id") %}
 	<form action="/create_message/{{thread.id}}" method="POST">

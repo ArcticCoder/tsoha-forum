@@ -5,7 +5,7 @@
 
 {% for thread in results%}
 	{% if thread.visible %}
-		<a href="/thread/{{thread.id}}" topic>{{thread.subject}}
+	<a href="/thread/{{thread.id}}" topic>{{thread.subject}}</a>
 	{% else %}
 		<a href="/thread/{{thread.id}}" topic not_visible>{{thread.subject}} <em>(poistettu)</em>
 	{% endif %}
@@ -13,7 +13,8 @@
 	<span topic_info>Aloittanut: {{thread.user_id | get_username}}, Viestejä: {{thread.message_count}},
 		 Tykkäyksiä: {{thread.likes}}{% if thread.latest %}, Viimeisin: {{thread.latest}} UTC{% endif %}</span>
 
-	</a><br>
+	<br>
+	<br>
 {% endfor%}
 
 {% endblock %}

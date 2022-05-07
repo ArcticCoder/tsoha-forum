@@ -78,6 +78,8 @@ def delete_message(message_id):
     message = get_message(message_id)
     if message:
         if session.get("is_admin") or session.get("user_id") == message.user_id:
+            sql = "DELETE FROM message_likes WHERE message_id=:id;"
+            db.session.execute(sql, {"id": message_id})
             sql = "DELETE FROM messages WHERE id=:id;"
             db.session.execute(sql, {"id": message_id})
             db.session.commit()
